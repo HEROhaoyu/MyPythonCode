@@ -20,5 +20,5 @@ for u, v in edges:
 color_list = ListedColormap(['white','red'],2);
 
 # 绘制图像
-plt.imshow(matrix,cmap=[plt.cm.gray,                 )
+plt.imshow(matrix,cmap=            )
 plt.savefig('graph.png')
