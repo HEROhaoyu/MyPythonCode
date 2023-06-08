@@ -78,7 +78,7 @@ def plot_degree_distribution(degrees,directory_name):
 
     # plt.show() #没有图形界面的服务器好像用不了这个函数，需要把图像保存下来再查看
     # plt.savefig('/home/hedonghao/graph/dataset/'+directory_name+'/NPU/image.png')
-    plt.savefig('E:\华科实验室论文\MyPythonCode\show_degree_statistic\graph.png')
+    plt.savefig('E:\华科实验室论文\MyPythonCode\generate_reorder_subgraph\dense_edges_degree.png')
     plt.close()
 
 
@@ -88,6 +88,6 @@ if __name__ == "__main__":
     parser.add_argument('--name', type=str, default = None)
     directory_name=parser.parse_args().name
     # file_path = '/home/hedonghao/graph/dataset/'+directory_name+'/NPU/dataset.txt'
-    file_path = 'E:\华科实验室论文\MyPythonCode\show_degree_statistic\graph.txt'
+    file_path = 'E:\华科实验室论文\MyPythonCode\generate_reorder_subgraph\dense_edges.txt'
     edges, degrees = read_graph_dataset(file_path)
     plot_degree_distribution(degrees,directory_name)

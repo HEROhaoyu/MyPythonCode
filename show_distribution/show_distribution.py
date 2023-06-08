@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 from matplotlib import colors
 # 读取图数据集
-with open('E:\华科实验室论文\MyPythonCode\show_distribution\graph.txt', 'r') as f:
+with open('E:\华科实验室论文\MyPythonCode\dataset\Social networks\Wiki-Vote.txt', 'r') as f:
     edges = [tuple(map(int, line.strip().split())) for line in f]
 
 # 获取节点数量
@@ -19,5 +19,5 @@ for u, v in edges:
 
 
 # 将matrix绘制成图像,值为1的点为蓝色，值为0的点为白色
-plt.imshow(matrix,cmap='Blues')
-plt.savefig('E:\华科实验室论文\MyPythonCode\show_distribution\graph.png')
+plt.imshow(matrix,cmap='Reds')
+plt.savefig('E:\华科实验室论文\MyPythonCode\dataset\Social networks\Wiki-Vote.png')
