@@ -1,8 +1,5 @@
 #代码功能：统计实际数据集中顶点的度数分布情况
-# import matplotlib
-# matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-# plt.switch_backend('Agg')
 import numpy as np
 import argparse
 
