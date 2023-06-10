@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 读取图数据文件
-edges = np.loadtxt('E:\华科实验室论文\MyPythonCode\dataset\Social networks\Wiki-Vote.txt', dtype=int)
+edges = np.loadtxt('E:\华科实验室论文\MyPythonCode\dataset\Social networks\\twitter_combined.txt', dtype=int)
 
 # 统计每个点的度数
 degrees = {}
@@ -23,9 +23,9 @@ for edge in edges:
         dense_edges.append(edge)
 
 # 将边信息保存到txt文件
-with open('E:\华科实验室论文\MyPythonCode\generate_reorder_subgraph\dense_edges.txt', 'w') as f:
+with open('E:\华科实验室论文\MyPythonCode\dataset\Social networks\\twitter_combined_subgraph.txt', 'w') as f:
     for edge in dense_edges:
         f.write(f"{edge[0]} {edge[1]}\n")
 
 # 输出提示信息
-print("稠密子图边信息已保存到dense_edges.txt文件。")
+print("稠密子图边信息已保存到文件。")
