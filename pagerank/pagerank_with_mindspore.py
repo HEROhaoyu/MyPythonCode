@@ -31,9 +31,9 @@ def build_adjacency_matrix(edges, vertices):
     Returns:
         tuple: 包含邻接矩阵和顶点ID映射的元组。
     """
-    id_map = {v: i for i, v in enumerate(sorted(vertices))}# 顶点ID映射，enumerate函数用于遍历序列中的元素以及它们的下标
+    id_map = {v: i for i, v in enumerate(sorted(vertices))}
     n = len(id_map)
-    matrix = np.zeros((n, n), dtype=np.float32)  # 使用浮点数类型
+    matrix = np.zeros((n, n), dtype=np.float32)
     for edge in edges:
         start, end = edge
         matrix[id_map[start], id_map[end]] = 1
@@ -51,15 +51,15 @@ def calculate_pagerank(adjacency_matrix, damping_factor=0.85, epsilon=1e-6):
     """
     n = adjacency_matrix.shape[0]
     deg_out = np.sum(adjacency_matrix, axis=1)
-    transfer_matrix = adjacency_matrix / np.where(deg_out[:, np.newaxis] != 0, deg_out[:, np.newaxis], 1)#np.where(condition, x, y) 满足条件(condition)，输出x，不满足输出y。
+    transfer_matrix = adjacency_matrix / np.where(deg_out[:, np.newaxis] != 0, deg_out[:, np.newaxis], 1)
     pagerank = np.ones(n, dtype=np.float32) / n
-    pagerank = Tensor(pagerank, mstype.float32)  # 使用浮点数类型的张量
-    transfer_matrix = Tensor(transfer_matrix, mstype.float32)  # 使用浮点数类型的张量
+    pagerank = Tensor(pagerank, mstype.float32)
+    transfer_matrix = Tensor(transfer_matrix, mstype.float32)
 
-    start_time = time.time()  # 记录计算时间
+    start_time = time.time()
     while True:
         new_pagerank = (1 - damping_factor) / n + damping_factor * ops.matmul(transfer_matrix, pagerank)
-        norm_diff = ops.norm(new_pagerank - pagerank, 0)  # 计算差异的L0范数
+        norm_diff = ops.norm(new_pagerank - pagerank, 0)
         if norm_diff < epsilon:
             break
         pagerank = new_pagerank
@@ -86,8 +86,8 @@ def write_pagerank(filename, pagerank, id_map):
 
 if __name__ == "__main__":
     # 输入文件名
-    edge_filename = "E:\华科实验室论文\MyPythonCode\pagerank\Wiki-Vote.txt"  # 原始数据集文件
-    result_filename = "E:\华科实验室论文\MyPythonCode\pagerank\pagerank8.txt"  # 结果文件
+    edge_filename = "E:\华科实验室论文\MyPythonCode\pagerank\Wiki-Vote.txt"
+    result_filename = "E:\华科实验室论文\MyPythonCode\pagerank\pagerank8.txt"
 
     # 读取边数据和顶点集合
     start_time = time.time()
@@ -95,6 +95,8 @@ if __name__ == "__main__":
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"读取边数据时间: {elapsed_time}秒")
+    print(f"数据集顶点数: {len(vertices)}")
+    print(f"数据集边数: {len(edges)}")
 
     # 构建邻接矩阵和顶点ID映射
     start_time = time.time()
