@@ -69,20 +69,20 @@ def calculate_pagerank(adjacency_matrix, damping_factor=0.85, epsilon=1e-6):
 
     return pagerank
 
-def write_pagerank(filename, pagerank, id_map):
+def write_pagerank(filename, pagerank, id_map, original_ids):
     """
     将PageRank结果写入文件。
     Args:
         filename (str): 结果文件名。
         pagerank (numpy.ndarray): 包含每个节点的PageRank值的数组。
         id_map (dict): 顶点ID映射。
+        original_ids (dict): 映射前的原始ID映射。
     Returns:
         None
     """
     with open(filename, 'w') as file:
         for v, pr in id_map.items():
-            file.write(f"{v} {pagerank[pr]}\n")
-
+            file.write(f"{original_ids[v]} {pagerank[pr]}\n")
 
 if __name__ == "__main__":
     # 输入文件名
@@ -112,9 +112,12 @@ if __name__ == "__main__":
     elapsed_time = end_time - start_time
     print(f"计算PageRank: {elapsed_time}秒")
 
+    # 生成原始ID映射
+    original_ids = {v: k for k, v in id_map.items()}
+
     # 写入结果文件
     start_time = time.time()
-    write_pagerank(result_filename, pagerank, id_map)
+    write_pagerank(result_filename, pagerank, id_map, original_ids)
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"写入结果文件时间: {elapsed_time}秒")
