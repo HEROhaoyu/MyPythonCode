@@ -1,8 +1,20 @@
 import time
 import numpy as np
+import mindspore
 import mindspore.ops as ops
 from mindspore import dtype as mstype
 from mindspore import Tensor
+from mindspore.profiler import Profiler
+import argparse
+
+print("执行pagerank_with_mindspore.py代码，使用mindspore进行计算\n")
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--name', type=str, default = None)
+parser.add_argument('--runs', type=str, default = None)
+directory_name=parser.parse_args().name
+runs=int(parser.parse_args().runs)
+
 
 def read_edges(filename):
     """
@@ -57,19 +69,22 @@ def calculate_pagerank(adjacency_matrix, damping_factor=0.85, epsilon=1e-6):
     transfer_matrix = Tensor(transfer_matrix, mstype.float32)
 
     start_time = time.time()
+    itr = 0
     while True:
         new_pagerank = (1 - damping_factor) / n + damping_factor * ops.matmul(transfer_matrix, pagerank)
         norm_diff = ops.norm(new_pagerank - pagerank, 0)
         if norm_diff < epsilon:
             break
         pagerank = new_pagerank
+        itr=itr+1
+    print("本次运行",itr,"次迭代收敛")
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"PageRank计算时间: {elapsed_time}秒")
 
     return pagerank
 
-def write_pagerank(filename, pagerank, id_map, original_ids):
+def write_pagerank(filename, pagerank, id_map):
     """
     将PageRank结果写入文件。
     Args:
@@ -80,14 +95,18 @@ def write_pagerank(filename, pagerank, id_map, original_ids):
     Returns:
         None
     """
+    # 将PageRank结果写入文件
+    pr_values = pagerank.asnumpy()  # 将Tensor转换为NumPy数组
+    results = [f"{v} {pr_values[pr]}\n" for v, pr in id_map.items()]
+    result_str = ''.join(results)
+
     with open(filename, 'w') as file:
-        for v, pr in id_map.items():
-            file.write(f"{original_ids[v]} {pagerank[pr]}\n")
+        file.write(result_str)
 
 if __name__ == "__main__":
     # 输入文件名
-    edge_filename = "E:\华科实验室论文\MyPythonCode\pagerank\Wiki-Vote.txt"
-    result_filename = "E:\华科实验室论文\MyPythonCode\pagerank\pagerank8.txt"
+    edge_filename = "/home/hedonghao/graph/dataset/"+directory_name+"/NPU/dataset.txt"  # 原始数据集文件
+    result_filename = "/home/hedonghao/graph/output/"+directory_name+"/NPU_pagerank_result.txt"  # 结果文件
 
     # 读取边数据和顶点集合
     start_time = time.time()
@@ -105,21 +124,25 @@ if __name__ == "__main__":
     elapsed_time = end_time - start_time
     print(f"构建邻接矩阵时间: {elapsed_time}秒")
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    #开启Profiler
+    mindspore.set_context(mode=mindspore.GRAPH_MODE, device_target="Ascend")
+    profiler = Profiler(output_path="/home/hedonghao/graph/output/"+directory_name+"/profiler",profile_memory=True,aicore_metrics=1,l2_cache=True)#初始化分析器
     # 计算PageRank
     start_time = time.time()
-    pagerank = calculate_pagerank(adjacency_matrix)
+    for i in range(runs):
+        pagerank = calculate_pagerank(adjacency_matrix)
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(f"计算PageRank: {elapsed_time}秒")
-
-    # 生成原始ID映射
-    original_ids = {v: k for k, v in id_map.items()}
+    print(f"计算{runs}次PageRank: {elapsed_time}秒")
+    profiler.analyse()#关闭分析器
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     # 写入结果文件
     start_time = time.time()
-    write_pagerank(result_filename, pagerank, id_map, original_ids)
+    write_pagerank(result_filename, pagerank, id_map)
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"写入结果文件时间: {elapsed_time}秒")
 
-    print("PageRank计算完成，结果已写入pagerank8.txt文件。")
+    print("PageRank计算完成，结果已写入output目录。")

@@ -16,22 +16,45 @@ for edge in edges:
 sorted_degrees = sorted(degrees.items(), key=lambda x: x[1], reverse=True)
 
 # 计算三个阈值
-threshold1 = sorted_degrees[int(len(sorted_degrees) * 0.1)][1]
-threshold2 = sorted_degrees[int(len(sorted_degrees) * 0.05)][1]
-threshold3 = sorted_degrees[int(len(sorted_degrees) * 0.01)][1]
+threshold1 = sorted_degrees[int(len(sorted_degrees))-1][1]
+threshold2 = sorted_degrees[int(len(sorted_degrees) * 0.5)][1]
+threshold3 = sorted_degrees[int(len(sorted_degrees) * 0.25)][1]
+threshold4 = sorted_degrees[int(len(sorted_degrees) * 0.10)][1]
+threshold5 = sorted_degrees[int(len(sorted_degrees) * 0.05)][1]
+threshold6 = sorted_degrees[int(len(sorted_degrees) * 0.01)][1]
 
 # 筛选边
 edges1 = []
 edges2 = []
 edges3 = []
+edges4 = []
+edges5 = []
+edges6 = []
 for edge in edges:
     if degrees[edge[0]] > threshold1 and degrees[edge[1]] > threshold1:
         edges1.append(edge)
+    else:
+        continue
     if degrees[edge[0]] > threshold2 and degrees[edge[1]] > threshold2:
         edges2.append(edge)
+    else:
+        continue
     if degrees[edge[0]] > threshold3 and degrees[edge[1]] > threshold3:
         edges3.append(edge)
-
+    else:
+        continue
+    if degrees[edge[0]] > threshold3 and degrees[edge[1]] > threshold4:
+        edges4.append(edge)
+    else:
+        continue
+    if degrees[edge[0]] > threshold3 and degrees[edge[1]] > threshold5:
+        edges5.append(edge)
+    else:
+        continue
+    if degrees[edge[0]] > threshold3 and degrees[edge[1]] > threshold6:
+        edges6.append(edge)
+    else:
+        continue
 # 将边转换为矩阵并绘制
 def plot_edges(edges, threshold, title, ax):
     max_node = max(max(edge) for edge in edges)
@@ -60,10 +83,13 @@ def plot_edges(edges, threshold, title, ax):
     text = f"Graph Information:\nNumber of Nodes: {num_nodes}\nNumber of Edges: {num_edges}\nMax Degree: {max_degree}\nMin Degree: {min_degree}\nAvg Degree: {avg_degree:.2f}"
     ax.annotate(text, xy=(180, 40), xycoords='axes points', ha='right', va='center', fontsize=12)
 
-fig, axes = plt.subplots(1, 3, figsize=(18, 6))
-plot_edges(edges1, threshold1, '前10%的稠密子图', axes[0])
-plot_edges(edges2, threshold2, '前5%的稠密子图', axes[1])
-plot_edges(edges3, threshold3, '前1%的稠密子图', axes[2])
+fig, axes = plt.subplots(2, 3, figsize=(18,12))
+plot_edges(edges1, threshold1, '原始图', axes[0][0])
+plot_edges(edges2, threshold2, '前50%的稠密子图', axes[0][1])
+plot_edges(edges3, threshold3, '前25%的稠密子图', axes[0][2])
+plot_edges(edges4, threshold4, '前10%的稠密子图', axes[1][0])
+plot_edges(edges5, threshold5, '前5%的稠密子图', axes[1][1])
+plot_edges(edges6, threshold6, '前1%的稠密子图', axes[1][2])
 
 # 调整图像之间的间距和图像右侧的距离
 plt.subplots_adjust(wspace=0.6, right=0.85)
