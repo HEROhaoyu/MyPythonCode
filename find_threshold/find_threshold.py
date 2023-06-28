@@ -82,8 +82,9 @@ def filter_dense_edges(edges, degrees, threshold):
 
 if __name__ == "__main__":
     # 读取图数据文件
-    edges = read_graph_data(r'C:\\Users\\huao\Desktop\\MyPythonCode\dataset\Social networks\Wiki-Vote.txt')
-    # edges = read_graph_data(r'C:\Users\\huao\Desktop\\MyPythonCode\dataset\Amazon  networks\Amazon0601.txt')
+    # edges = read_graph_data(r'C:\\Users\\huao\Desktop\\MyPythonCode\dataset\Social networks\Wiki-Vote.txt')
+    # edges = read_graph_data(r'C:\\Users\\huao\Desktop\\MyPythonCode\dataset\Amazon  networks\Amazon0601.txt')
+    edges = read_graph_data(r'C:\\Users\\huao\Desktop\\MyPythonCode\dataset\\Road  networks\\roadNet-CA.txt')
 
     # 统计每个点的度数
     degrees = compute_degrees(edges)
@@ -141,4 +142,4 @@ if __name__ == "__main__":
     plt.xlim(0, plt.xlim()[1])
     plt.ylim(0, plt.ylim()[1])
 
-    plt.savefig(r"C:\\Users\\huao\Desktop\\MyPythonCode\\find_threshold\\find_threshold.png")
+    plt.savefig(r"C:\\Users\\huao\Desktop\\MyPythonCode\\find_threshold\\find_threshold_2.png")
