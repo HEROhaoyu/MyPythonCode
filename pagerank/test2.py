@@ -63,24 +63,34 @@ def calculate_pagerank(adjacency_matrix, damping_factor=0.85, epsilon=1e-6):
         numpy.ndarray: 包含每个节点的PageRank值的数组。
     """
     n = adjacency_matrix.shape[0]
-    deg_out = np.sum(adjacency_matrix, axis=1)
-    # transfer_matrix = adjacency_matrix / np.where(deg_out[:, np.newaxis] != 0, deg_out[:, np.newaxis], 1)
-    transfer_matrix=np.zeros((n,n))
+    deg_out = np.sum(adjacency_matrix, axis=1)#计算每个节点的出度，axis=1表示按行求和
+    transfer_matrix = np.zeros_like(adjacency_matrix)
+
     for i in range(n):
         if deg_out[i] != 0:
             transfer_matrix[i] = adjacency_matrix[i] / deg_out[i]
-        else:
-            transfer_matrix[i] = 0
-    pagerank = np.ones(n)/ n
-    # pagerank = np.ones(n) / n
-    iter=0
-    while True:
-        new_pagerank = (1 - damping_factor) / n + damping_factor * np.dot(transfer_matrix.T, pagerank)
-        if np.linalg.norm(new_pagerank - pagerank,ord=1) < epsilon:
+
+    pagerank = np.ones(n) / n
+    iter = 0
+
+    # while True:
+    for i in range(2):
+        new_pagerank = np.zeros_like(pagerank)
+
+        for i in range(n):
+            for j in range(n):
+                if adjacency_matrix[j][i] != 0:
+                    new_pagerank[i] += damping_factor * pagerank[j] / deg_out[j]
+
+        new_pagerank += (1 - damping_factor) / n
+
+        if np.linalg.norm(new_pagerank - pagerank, ord=1) < epsilon:
             break
+
         pagerank = new_pagerank
-        iter+=1
+        iter += 1
         print("第{}次迭代".format(iter))
+
     return pagerank
 
 def write_pagerank(pagerank_vector, vertex,id_map, output):
@@ -101,7 +111,7 @@ matrix = build_adjacency_matrix(edges, vertices)
 pagerank = calculate_pagerank(matrix)
 
 # 写入结果文件
-result_filename = "E:\华科实验室论文\MyPythonCode\pagerank\pagerank18.txt"
+result_filename = "E:\华科实验室论文\MyPythonCode\pagerank\pagerank19.txt"
 write_pagerank(pagerank, vertices1,id_map,result_filename)
 
 print("PageRank计算完成，结果已写入pagerank.txt文件。")

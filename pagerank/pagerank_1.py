@@ -12,25 +12,15 @@ def read_edges(filename):
     """
     edges = []
     vertices = set()
-    vertices = set()
-    vertices1 = set()
-    id_map = {}
+    max_id = 0
     with open(filename, 'r') as file:
         for line in file:
             start, end = map(int, line.strip().split())
-            vertices1.add(start)
-            vertices1.add(end)            
-            #顶点重映射
-            if start not in id_map:
-                id_map[start] = len(id_map)
-            if end not in id_map:
-                id_map[end] = len(id_map)
-            start = id_map[start]
-            end = id_map[end]
             edges.append((start, end))
             vertices.add(start)
             vertices.add(end)
-    return edges, vertices, vertices1,id_map
+            max_id = max(max_id, start, end)
+    return edges, vertices,max_id
 
 def build_adjacency_matrix(edges, vertices):
     """
@@ -43,11 +33,12 @@ def build_adjacency_matrix(edges, vertices):
     Returns:
         tuple: 包含邻接矩阵和顶点ID映射的元组。
     """
-    n = len(vertices)
-    matrix = np.zeros((n, n))
+    # id_map = {v: i for i, v in enumerate(sorted(vertices))}
+    n = max_vertex_num
+    matrix = np.zeros((n, n),float)
     for edge in edges:
         start, end = edge
-        matrix[start][end] = 1
+        matrix[start,end] = 1
     return matrix
 
 def calculate_pagerank(adjacency_matrix, damping_factor=0.85, epsilon=1e-6):
@@ -62,46 +53,61 @@ def calculate_pagerank(adjacency_matrix, damping_factor=0.85, epsilon=1e-6):
     Returns:
         numpy.ndarray: 包含每个节点的PageRank值的数组。
     """
-    n = adjacency_matrix.shape[0]
+    n = max_vertex_num
     deg_out = np.sum(adjacency_matrix, axis=1)
-    # transfer_matrix = adjacency_matrix / np.where(deg_out[:, np.newaxis] != 0, deg_out[:, np.newaxis], 1)
-    transfer_matrix=np.zeros((n,n))
-    for i in range(n):
-        if deg_out[i] != 0:
-            transfer_matrix[i] = adjacency_matrix[i] / deg_out[i]
-        else:
-            transfer_matrix[i] = 0
-    pagerank = np.ones(n)/ n
+    transfer_matrix = adjacency_matrix / np.where(deg_out[:, np.newaxis] != 0, deg_out[:, np.newaxis], 1)
+    pagerank = np.ones(n,float)/n
     # pagerank = np.ones(n) / n
     iter=0
     while True:
         new_pagerank = (1 - damping_factor) / n + damping_factor * np.dot(transfer_matrix.T, pagerank)
-        if np.linalg.norm(new_pagerank - pagerank,ord=1) < epsilon:
+        # if (new_pagerank - pagerank).all < epsilon:
+        # diff = np.max(np.abs(new_pagerank - pagerank))  # 计算新旧PageRank值之间的最大差异
+        # if(diff<epsilon):
+        # if np.linalg.norm(new_pagerank - pagerank) < epsilon:
+        #     break
+        # if sum(abs(new_pagerank - pagerank)) < epsilon:
+        #     break
+        if iter>100:
             break
+        iter=iter+1
         pagerank = new_pagerank
-        iter+=1
-        print("第{}次迭代".format(iter))
     return pagerank
 
-def write_pagerank(pagerank_vector, vertex,id_map, output):
-    with open(output, 'w') as file:
-        for v in vertex:
-            file.write('{}\t{}\n'.format(v, format(pagerank_vector[id_map[v]], '.6f').rstrip('0').rstrip('.')))
+def write_pagerank(filename, pagerank):
+    """
+    将PageRank结果写入文件。
+
+    Args:
+        filename (str): 结果文件名。
+        pagerank (numpy.ndarray): 包含每个节点的PageRank值的数组。
+        id_map (dict): 顶点ID映射。
+
+    Returns:
+        None
+    """
+    with open(filename, 'w') as file:
+        # for v, pr in id_map.items():
+        #     file.write(f"{v} {pagerank[pr]}\n")
+        for i in range(max_vertex_num):
+            file.write(f"{i} {pagerank[i]}\n")
+
+
 
 # 输入边文件名
-edge_filename = "E:\华科实验室论文\MyPythonCode\pagerank\Wiki-Vote.txt"
+edge_filename = "E:\华科实验室论文\MyPythonCode\pagerank\\barabasi-20000.txt"
 
 # 读取边数据和顶点集合
-edges, vertices, vertices1,id_map = read_edges(edge_filename)
-
+edges, vertices, max_id = read_edges(edge_filename)
+max_vertex_num = max_id+1
 # 构建邻接矩阵和顶点ID映射
-matrix = build_adjacency_matrix(edges, vertices)
+adjacency_matrix = build_adjacency_matrix(edges, vertices)
 
 # 计算PageRank
-pagerank = calculate_pagerank(matrix)
+pagerank = calculate_pagerank(adjacency_matrix)
 
 # 写入结果文件
-result_filename = "E:\华科实验室论文\MyPythonCode\pagerank\pagerank18.txt"
-write_pagerank(pagerank, vertices1,id_map,result_filename)
+result_filename = "E:\华科实验室论文\MyPythonCode\pagerank\pagerank22.txt"
+write_pagerank(result_filename, pagerank)
 
 print("PageRank计算完成，结果已写入pagerank.txt文件。")
