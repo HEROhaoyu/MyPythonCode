@@ -1,0 +1,3 @@
+代码说明:
+1,pagerank_numpy_vector_divide.py：使用numpy库，计算过程用到了向量除法，计算结果和galois的结果一致。
+2,pagerank_with_mindspore_matrix_matmul.py：使用mindspore库，计算过程用到了矩阵乘法，计算结果和galois不一致。

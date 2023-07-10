@@ -105,9 +105,10 @@ def write_pagerank(filename, pagerank, id_map):
 
 if __name__ == "__main__":
     # 输入文件名
-    edge_filename = "/home/hedonghao/graph/dataset/"+directory_name+"/NPU/dataset.txt"  # 原始数据集文件
-    result_filename = "/home/hedonghao/graph/output/"+directory_name+"/NPU_pagerank_result.txt"  # 结果文件
-
+    # edge_filename = "/home/hedonghao/graph/dataset/"+directory_name+"/NPU/dataset.txt"  # 原始数据集文件
+    # result_filename = "/home/hedonghao/graph/output/"+directory_name+"/NPU_pagerank_result.txt"  # 结果文件
+    edge_filename = "E:\华科实验室论文\MyPythonCode\pagerank\Wiki-Vote.txt"  # 原始数据集文件
+    result_filename = "E:\华科实验室论文\MyPythonCode\pagerank\Wiki-Vote-pagerank_with_mindspore_matrix_matmul.py.txt"  # 结果文件
     # 读取边数据和顶点集合
     start_time = time.time()
     edges, vertices = read_edges(edge_filename)
@@ -126,8 +127,8 @@ if __name__ == "__main__":
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #开启Profiler
-    mindspore.set_context(mode=mindspore.GRAPH_MODE, device_target="Ascend")
-    profiler = Profiler(output_path="/home/hedonghao/graph/output/"+directory_name+"/profiler",profile_memory=True,aicore_metrics=1,l2_cache=True)#初始化分析器
+    # mindspore.set_context(mode=mindspore.GRAPH_MODE, device_target="Ascend")
+    # profiler = Profiler(output_path="/home/hedonghao/graph/output/"+directory_name+"/profiler",profile_memory=True,aicore_metrics=1,l2_cache=True)#初始化分析器
     # 计算PageRank
     start_time = time.time()
     for i in range(runs):
@@ -135,7 +136,7 @@ if __name__ == "__main__":
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"计算{runs}次PageRank: {elapsed_time}秒")
-    profiler.analyse()#关闭分析器
+    # profiler.analyse()#关闭分析器
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     # 写入结果文件
