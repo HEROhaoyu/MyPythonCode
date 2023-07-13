@@ -43,14 +43,14 @@ def pagerank_incremental(vertices_len,edges_reorder, damping_factor=0.85, tolera
     # dtype=np.float64
     # precision=np.finfo(dtype).precision
 
-    record=set()
+
     for iter in range(max_iterations):
         #添加增量
         pagerank=np.add(pagerank,residual)
         #计算增量
         delta=np.zeros(vertices_len,float)
         # delta=np.round(np.divide(residual,outdegree)*damping_factor,precision)
-        delta=np.divide(residual,outdegree,out=delta,where=(outdegree!=0))*damping_factor
+        delta=np.divide(residual,outdegree)*damping_factor
         residual=np.zeros(vertices_len,np.float64)
 
 
@@ -72,8 +72,10 @@ def write_pagerank(pagerank, output,vertices_orginal,id_map):
 
 
 if __name__ == '__main__':
-    input_file = "E:\华科实验室论文\MyPythonCode\pagerank\Wiki-Vote.txt"
-    output_file = "E:\华科实验室论文\MyPythonCode\pagerank\Wiki-Vote-pagerank_numpy_vector_divide.txt"
+    # input_file = "E:\华科实验室论文\MyPythonCode\pagerank\Wiki-Vote.txt"
+    input_file = r"C:\\Users\\huao\Desktop\\MyPythonCode\\generate_reorder_graph\\Wiki-Vote_reorder_graph.txt"
+    # output_file = "E:\华科实验室论文\MyPythonCode\pagerank\Wiki-Vote-pagerank_numpy_vector_divide.txt"
+    output_file = r"C:\\Users\\huao\\Desktop\\MyPythonCode\\pagerank\Wiki-Vote-pagerank_numpy_vector_divide_1.txt"
     #读图
     t1=time.time()
     vertices_orginal,edges_reorder,id_map = read_edges(input_file)

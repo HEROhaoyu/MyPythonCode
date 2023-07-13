@@ -85,8 +85,10 @@ def generator_reorder_edgelist(edges, threshold,filename):
 
 if __name__ == "__main__":
     #设置文件路径
-    input_path="C:\\Users\\huao\Desktop\\MyPythonCode\dataset\\Road  networks\\roadNet-CA.txt"
-    output_path="E:\华科实验室论文\MyPythonCode\\reorder_edgelist\\dataset_reorder.txt"
+    # input_path="C:\\Users\\huao\Desktop\\MyPythonCode\dataset\\Road  networks\\roadNet-CA.txt"
+    # output_path="E:\华科实验室论文\MyPythonCode\\reorder_edgelist\\dataset_reorder.txt"
+    input_path="C:\Users\huao\Desktop\MyPythonCode\reorder_edgelist\Wiki-Vote.txt"
+    output_path="C:\Users\huao\Desktop\MyPythonCode\reorder_edgelist\Wiki-Vote_reorder.txt"
     
     # 读取图数据文件
     # edges = read_graph_data(r'C:\\Users\\huao\Desktop\\MyPythonCode\dataset\Social networks\Wiki-Vote.txt')
